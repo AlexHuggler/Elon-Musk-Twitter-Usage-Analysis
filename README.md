@@ -20,7 +20,7 @@
 ### Technologies and Packages Used
 
 * Python and Jupyter Notebook
-* Numpy, Pandas, Huggingface, NLTK, Scipy, Pytorch
+* Numpy, Pandas, Transformers/Huggingface, NLTK, Scipy, Pytorch
 * Matplotlib, Seaborn, plotly, and more
 
 
