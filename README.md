@@ -1,57 +1,63 @@
-# Twitter Web Scraping and Sentiment Classification via roBERTa
+# Twitter Sentiment Analysis (Modernized)
 
+This project provides a modular, class-based pipeline for scraping recent tweets from any X (formerly Twitter) account, cleaning the text, and running sentiment analysis with the latest **cardiffnlp/twitter-roberta-base-sentiment-latest** model. Visual reports and CSV exports are generated automatically for the requested handle.
 
-### Project Objective
+## Features
 
-* The purpose of this project is to review the Twitter Usage history of @elonmusk, apply the roBERTa pre-trained Transformers model for sentiment classification, and gain greater insights into the Twitter habits of Time Magazine's Person of the Year 2021.
+- **Pluggable scraper:** Uses [`ntscraper`](https://pypi.org/project/ntscraper/) (Nitter) to fetch recent tweets, reactions, and timestamps.
+- **State-of-the-art NLP:** Hugging Face transformer fine-tuned for modern Twitter/X sentiment.
+- **Parametric analysis:** `analyze_user("somehandle")` works for any account and names output files after the handle (e.g., `somehandle_tweets.csv`).
+- **Visualization:** Matplotlib/Seaborn charts with user-specific titles for quick reporting.
+- **Configurable:** Adjust tweet limits, model name, and output directories via `AnalysisConfig`.
 
+## Project Structure
 
-### Methods Used
+```
+.
+├── twitter_sentiment/
+│   ├── __init__.py
+│   ├── config.py
+│   ├── pipeline.py
+│   ├── preprocessing.py
+│   ├── scraper.py
+│   ├── sentiment.py
+│   └── visualization.py
+├── requirements.txt
+├── Twitter_Sentiment_Analysis_Modern.ipynb
+└── ... (legacy files)
+```
 
-* Inferential Statistics
-* Web Scraping
-* Data Wrangling
-* Data Preprocessing
-* Data Visualization
-* NLP - Sentiment Analysis
+## Quickstart
 
+1. **Install dependencies**
 
+   ```bash
+   pip install -r requirements.txt
+   ```
 
-### Technologies and Packages Used
+2. **Run an analysis for any user**
 
-* Python and Jupyter Notebook
-* Numpy, Pandas, Transformers/Huggingface, NLTK, Scipy, Pytorch
-* Matplotlib, Seaborn, plotly, and more
+   ```python
+   from twitter_sentiment import analyze_user, AnalysisConfig
 
+   df, dist_plot, trend_plot = analyze_user(
+       "BillGates",  # Twitter handle without the @ symbol
+       config=AnalysisConfig(tweets_limit=150)
+   )
+   print(df.head())
+   print(f"Saved data to: {dist_plot}")
+   ```
 
-### Project Description
+   Outputs:
 
-* Summary: 
-  - Review the Twitter usage of what some refer to as "the cyborg-like man" or the "Thomas Edison of our time", and more recently, Time Magazine's Person of the Year in 2021.
- 
-  
-* Data and Scope:
+   - CSV: `outputs/<handle>_tweets.csv`
+   - Figures: `figures/<handle>_sentiment_distribution.png`, `figures/<handle>_sentiment_trend.png`
 
-  - The dataset was webscraped via the snscrape library, and pulled in all Tweets&Replies from Twitter user @elonmusk and consisted of Like counts, reply counts, retweet counts, datetime, and original text of tweets. Other data fields such as location were included. 
-  
-  
-* Methodology Approach:
+## Google Colab
 
-  - Data Preprocessing:
-    1. Cleaned Twitter text for removal of stopwords, links, and punctuations.
-    2. Data engineered @mentions column for list f mentioned users, as well as classificaton column for sentiment
-    
-  
-  - Modeling Approach: 
-    1. Utlized roBERTa transformer model, pre-trained on ~58 million tweets in the english language
-    2. Determined sentiment classification of a tweet, by taking the sentiment score with the highest value between 0 and 1. (e.g. if a tweet has 0.82 positive score, 0.1 negative score, and 0.08 neutral score, then the tweet would be identified as being "positive")
+Use the provided notebook `Twitter_Sentiment_Analysis_Modern.ipynb` for a Colab-ready walkthrough that installs requirements, scrapes tweets, and visualizes sentiment for any handle.
 
-  
-### Conclusions/Findings:
+## Notes
 
-  - Elon Musk has shown increased popularity within 2022 in the Twitter activity associated with his posts. This is shown in "like counts" and "reply counts". This has coincided with his take over bid of Twitter, which started in early 2022, possibly indicating that increased media attention has assisted his Twitter engagement.
-  
-  - Much of Elon Musk's Twitter engagement surrounds around his work with Tesla and Spacex, which demonstrates that his use of the Twitter platform is heavily leveraged as a free marketing tool for building brand equity with customers/potential future customers of his companies.
-  
- 
-  
+- The scraper relies on public Nitter instances; availability may vary. Configure a preferred instance via `AnalysisConfig(nitter_instance="https://nitter.net")` if needed.
+- Hugging Face models download on first use; running on GPU (if available) will accelerate inference.
